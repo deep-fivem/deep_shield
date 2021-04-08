@@ -1,10 +1,12 @@
-local shieldActive_two = false
+--shieldActive_two szaar
+
+--local shieldActive_two = false
 local shieldActive = false
 local shieldEntity = nil
 
 -- ANIM
-local animDict = ""
-local animName = ""
+local animDict = "combat@gestures@gang@pistol_1h@beckon"
+local animName = "0"
 
 local prop = "prop_ballistic_shield"
 local pistol = GetHashKey("WEAPON_PISTOL")
@@ -37,12 +39,11 @@ end)
 function EnableShield()
     local ped = GetPlayerPed(-1)
     local pedPos = GetEntityCoords(ped, false)
+    local ammo = GetAmmoInPedWeapon(ped, pistol)
+    print('ammo: '..ammo) --need test
     if HasPedGotWeapon(ped, pistol, 0) or GetSelectedPedWeapon(ped) == pistol then
         print('has pistol')
         shieldActive = true
-
-        animDict = "combat@gestures@gang@pistol_1h@beckon"
-        animName = "0"
 
         RequestAnimDict(animDict)
         while not HasAnimDictLoaded(animDict) do
@@ -63,10 +64,9 @@ function EnableShield()
         SetWeaponAnimationOverride(ped, GetHashKey("Gang1H"))
         SetCurrentPedWeapon(ped, pistol, true)
         SetEnableHandcuffs(ped, true)
-    else
+    elseif not HasPedGotWeapon(ped, pistol, 0) or not GetSelectedPedWeapon(ped) == pistol
         print('does not has pistol')
-        --do a whole other attach to bodyshell or just BODY figure it out
-
+    --[[
         shieldActive_two = true
 
         animDict = "combat@gestures@gang@pistol_1h@beckon"
@@ -88,7 +88,7 @@ function EnableShield()
         shieldEntity = shield
 
         local others = {
-            xPos = 0.0, 
+            xPos = 0.0,
             yPos = -0.05,
             zPos = -0.10,
             xRot = -30.0,
@@ -107,6 +107,13 @@ function EnableShield()
         --SetWeaponAnimationOverride(ped, GetHashKey("Gang"))
         --SetCurrentPedWeapon(ped, pistol, true)
         --SetEnableHandcuffs(ped, true)
+        ]]
+
+        ESX.ShowNotification("Nincs nálad pisztoly!")
+
+    elseif HasPedGotWeapon(ped, pistol, 0) and GetAmmoInPedWeapon(ped, pistol) == < 200
+        AddAmmoToPed(ped, pistol, 550)
+        ESX.ShowNotification("Kaptál ammo-t mivel kevés volt nálad.")
     end
 end
 
@@ -120,7 +127,7 @@ function DisableShield()
 
     SetEnableHandcuffs(ped, false)
     shieldActive = false
-    shieldActive_two = false
+    --shieldActive_two = false
     shieldEntity = nil
     animDict = ""
     animName = ""
@@ -144,7 +151,7 @@ Citizen.CreateThread(function()
                 TaskPlayAnim(ped, animDict, animName, 8.0, -8.0, -1, (2 + 16 + 32), 0.0, 0, 0, 0)
             end
             SetWeaponAnimationOverride(ped, GetHashKey("Gang1H"))
-            
+
 
             if not (GetSelectedPedWeapon(ped) == pistol) then
                 DisableShield()    
@@ -173,6 +180,7 @@ Citizen.CreateThread(function()
             ]]
 
         end
+        --[[
         if shieldActive_two then
             local ped = GetPlayerPed(-1)
             if not IsEntityPlayingAnim(ped, animDict, animName, 1) then
@@ -190,6 +198,7 @@ Citizen.CreateThread(function()
                 Citizen.Wait(0)
             end
         end
+        ]]
         Citizen.Wait(100)
     end
 end)
@@ -205,6 +214,10 @@ end)
 
 --notes
 --[[
+
+    nem kellett.
+    volt collisionje.
+
   AttachEntityToEntityPhysically(entity1, entity2, boneIndex1, boneIndex2, xPos1, yPos1, zPos1, xPos2, yPos2, zPos2, xRot, yRot, zRot, breakForce, fixedRot, p15, collision, teleport, p18)
 
     if not DoesEntityHavePhysics(entity) then
