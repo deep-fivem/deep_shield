@@ -22,12 +22,6 @@ RegisterCommand("ammo", function(source)
     ESX.ShowNotification("pistol ammo: "..GetAmmoInPedWeapon(GetPlayerPed(source), GetHashKey("WEAPON_PISTOL") ""))
 end, false)
 
-
-RegisterCommand("shield", function(source, args, rawCommand)
-    print('command entered')
-    TriggerEvent("shield:toggle")
-end, false)
-
 RegisterNetEvent("shield:toggle")
 AddEventHandler("shield:toggle", function()
     if not wait and shieldActive then
@@ -37,6 +31,11 @@ AddEventHandler("shield:toggle", function()
     end
     print('toggle')
 end)
+
+RegisterCommand("shield", function(source, args, rawCommand)
+    print('command entered')
+    TriggerEvent("shield:toggle")
+end, false)
 
 function EnableShield()
     wait = true
@@ -113,33 +112,34 @@ Citizen.CreateThread(function()
         Citizen.Wait(100)
         if not wait and shieldActive then
             local ped = GetPlayerPed(-1)
+            
+            --make sure anim is playing
             if not IsEntityPlayingAnim(ped, animDict, animName, 1) then
                 RequestAnimDict(animDict)
+
                 while not HasAnimDictLoaded(animDict) do
                     Citizen.Wait(100)
                 end
             
                 TaskPlayAnim(ped, animDict, animName, 8.0, -8.0, -1, (2 + 16 + 32), 0.0, 0, 0, 0)
             end
-
+            --should be useful is the player slips or something like that
             if HasEntityAnimFinished(ped, animDict, animName, 1) then
+                print('HasEntityAnimFinished')
                 DisableShield()
             end
+            
             SetWeaponAnimationOverride(ped, GetHashKey("Gang1H"))
 
-
+            -- if selected weapon is changed shield will be disabled
             if not (GetSelectedPedWeapon(ped) == pistol) then
                 DisableShield()    
-            end
-
-            RequestAnimDict(animDict)
-            if not HasAnimDictLoaded(animDict) then
-                Citizen.Wait(0)
             end
         end
     end
 end)
 
+--disable on restart
 AddEventHandler('onResourceStop', function(resourceName)
     if (GetCurrentResourceName() ~= resourceName) then
         return
@@ -148,19 +148,3 @@ AddEventHandler('onResourceStop', function(resourceName)
     DisableShield()
     print('shieldEntity deleted')
 end)  
-
---notes
---[[
-
-    -3. használat után nem működik
-
-    nem kellett.
-    volt collisionje.
-
-  AttachEntityToEntityPhysically(entity1, entity2, boneIndex1, boneIndex2, xPos1, yPos1, zPos1, xPos2, yPos2, zPos2, xRot, yRot, zRot, breakForce, fixedRot, p15, collision, teleport, p18)
-
-    if not DoesEntityHavePhysics(entity) then
-        ActivatePhysics(entity)
-    end
-
-]]
