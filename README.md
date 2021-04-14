@@ -10,7 +10,7 @@ A scriptről
 Teljeskörűen Konfigolható
 
 Itemmel működik - sql mellékelt (esx 1.2 vagy nagyobb verzióhoz át kell írni a limit-et weight-re) 
-Az item neve(amivel beaddolod) configba állítható, az in game látható neve sql-be (label)
+Az item neve(amivel beaddolod) configba állítható(Ne felejtsd el sql-be is átállítani), az in game látható neve, sql-be (label)
 
 Ad ammo-t ha be van kapcsolva configba. Konfigurálható, hogy mennyi ammotól adjon és mennyit.
 Ad ammo-t ha egy bizonyos mennyiség alatt van nálad, ez a mennyiség és az adott ammo mennyisége
