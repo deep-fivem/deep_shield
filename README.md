@@ -34,3 +34,5 @@ Ha shield használata közben q-t nyomsz, azaz fedezékbe mész, elveszi tőled 
 Nem ülhetsz be autóba shield használata közben, mivel autóval használva bugos, ha megpróbálod elveszi tőled a shield-et.
 
 A shield elrakásának leggyorsabb módja a más fegyverre váltás (akár kéz).
+
+Changed to public on 2021.09.27
